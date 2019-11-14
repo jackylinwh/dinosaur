@@ -7,7 +7,7 @@ from tutorials.models import Topic
 
 
 def index(request):
-    return render(request, 'tutorials/index.html', {})
+    return render(request, 'tutorials/index.html', {'model': Topic.objects.filter(parent=None)})
 
 
 def topic(request, pk):
