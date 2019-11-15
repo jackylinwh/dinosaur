@@ -1,8 +1,10 @@
 import markdown
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
+from django.urls import reverse
+
 from tutorials.models import Topic
 
 
@@ -12,6 +14,10 @@ def index(request):
 
 def topic(request, pk):
     model = get_object_or_404(Topic, id=pk)
+    if not model.content:
+        for m in model.get_descendants():
+            if m.content:
+                return redirect(reverse("tutorials:topic_detail", args=[m.id]))
     if model.content:
         model.content = markdown.markdown(model.content, extensions=[
             'markdown.extensions.extra',

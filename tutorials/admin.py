@@ -8,7 +8,7 @@ from tutorials.models import Topic, Tag
 
 
 class TopicAdmin(MPTTModelAdmin):
-    list_display = ['title', 'parent']
+    list_display = ['title', 'is_article', 'parent']
 
 
 class TagAdmin(admin.ModelAdmin):
