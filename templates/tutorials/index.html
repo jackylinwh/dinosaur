@@ -7,30 +7,22 @@
 {% block content %}
     <!-- Jumbotron Header -->
     <header class="jumbotron my-4">
-      <h1 class="display-3">程序猿</h1>
-      <p class="lead">一个基于Django的博客网站。</p>
-      <p class="lead">欢迎访问！</p>
+        <h1 class="display-3">程序猿</h1>
+        <p class="lead">一个基于Django的博客网站。</p>
+        <p class="lead">欢迎访问！</p>
     </header>
 
     <!-- Page Features -->
-    <div class="row text-center">
+    <div>
 
-      {% for topic in model %}
-
-      <div class="col-lg-4 col-md-6 mb-4">
-        <div class="card h-100">
-          {% if topic.cover %}
-          <img class="card-img-top" src="/media/{{topic.cover}}" alt="">
-          {% endif %}
-          <div class="card-body">
-            <h4 class="card-title">{{ topic.title}}</h4>
-            <p class="card-text">{{ topic.content | safe}}</p>
-          </div>
-          <div class="card-footer">
-            <a href="{% url 'tutorials:topic_detail' topic.id %}" class="btn btn-primary">Find Out More!</a>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
+        {% for topic in model %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">{{ topic.title }}</h4>
+                    <p class="card-text">{{ topic.content | safe }}</p>
+                    <a href="{% url 'tutorials:topic_detail' topic.id %} " class="card-link">点击阅读</a>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}
