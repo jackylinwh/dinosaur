@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from tutorials import views
+from blog import views
 
-app_name = "tutorials"
+app_name = "blog"
 
 urlpatterns = [
     path('', views.index, name="index"),

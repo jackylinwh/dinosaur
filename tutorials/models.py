@@ -16,6 +16,10 @@ class Topic(MPTTModel):
     parent = TreeForeignKey('self', verbose_name='父级目录', on_delete=models.CASCADE, null=True,
                             blank=True, related_name='children')
 
+    def first_article(self):
+        topics = self.get_root().get_descendants(True)
+        return Article.objects.filter(topic__in=topics).order_by("index").first()
+
     def __str__(self):
         return self.title
 
@@ -25,13 +29,21 @@ class Topic(MPTTModel):
 
 
 class Article(models.Model):
-    topic = models.ForeignKey('Topic', on_delete=models.CASCADE, verbose_name="标题", related_name='content')
+    topic = models.ForeignKey('Topic', on_delete=models.CASCADE, verbose_name="标题") #, related_name='content'
     content = MDTextField(verbose_name='内容', null=True, blank=True)
     index = models.IntegerField()
     tags = models.ManyToManyField('Tag', verbose_name='标签集合', blank=True)
 
     def title(self):
-        return self.__str__();
+        return self.__str__()
+
+    def next(self):
+        topics = self.topic.get_root().get_descendants(True)
+        return Article.objects.filter(topic__in=topics, index__gt=self.index).order_by("index").first()
+
+    def prev(self):
+        topics = self.topic.get_root().get_descendants(True)
+        return Article.objects.filter(topic__in=topics, index__lt=self.index).order_by("-index").first()
 
     def __str__(self):
         return self.topic.title

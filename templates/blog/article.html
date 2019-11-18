@@ -1,0 +1,84 @@
+{% extends './layout.html' %}
+{% load mptt_tags %}
+{% load static %}
+
+{% block header %}
+    <title>{{ model.title }}--程序猿|一个基于Django的博客网站</title>
+    <link rel="stylesheet" href="{% static 'vendor/font-awesome-4.7.0/css/font-awesome.css' %}">
+    <link href="{% static '/vendor/bstree/css/bstree.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <div class="row mb-4">
+        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 bg-light border-right border-left">
+            <div class="sidebar-heading mt-4">{{ root.title }}</div>
+            <div id="mytree" class="bstree list-group list-group-flush">
+                {% with menu=root.get_descendants %}
+                    <ul style="padding-inline-start: 1em">
+                        {% recursetree menu %}
+                            {% if node.is_leaf_node %}
+                                <li data-level={{ node.level }} data-link="{% url 'blog:article' node.id %}">
+                                    {% else %}
+                                <li data-level={{ node.level }}>
+                            {% endif %}
+                        <span class="label label-default">{{ node.title }}</span>
+                        {% if not node.is_leaf_node %}
+                            <ul class="children">
+                                {{ children }}
+                            </ul>
+                        {% endif %}
+                        </li>
+                        {% endrecursetree %}
+                    </ul>
+                {% endwith %}
+            </div>
+        </div>
+
+        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+
+            <div>
+                <h1 class="mt-4">{{ model.title }}</h1>
+                {{ model.content | safe }}
+            </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% with prev=model.prev %}
+                    {% if prev %}
+                        <li class="pate-item"><a href="{% url 'blog:article' prev.id %}">&larr; 上一篇 {{ prev.title }}</a>
+                        </li>
+                    {% else %}
+                        <li class="pate-item disabled"><a href="javascript:void(0);">&larr; 上一篇</a></li>
+                    {% endif %}
+                {% endwith %}
+                {% with next=model.next %}
+                    {% if next %}
+                        <li class="pate-item"><a href="{% url 'blog:article' next.id %}">下一篇 {{ next.title }} &rarr;</a></li>
+                    {% else %}
+                        <li class="pate-item disabled"><a href="javascript:void(0);">下一篇 &rarr;</a></li>
+                    {% endif %}
+                {% endwith %}
+            </ul>
+        </nav>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra-js %}
+    <script src="{% static '/vendor/bstree/js/jquery.bstree.js' %}"></script>
+    <script>
+        $('document').ready(function () {
+            $('#mytree').bstree({
+                isExpanded: true,
+                updateNodeTitle: function (node, title) {
+                    if (node.attr('data-link'))
+                        return "<a href='" + node.attr('data-link') + "'>" + title + "</a>";
+                    else
+                        return title
+                }
+            });
+        })
+    </script>
+{% endblock %}
+
+
+

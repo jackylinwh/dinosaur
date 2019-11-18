@@ -21,7 +21,7 @@
                     <p class="card-text">{{ topic.content | safe }}</p>
                     {% with article=topic.first_article %}
                         {%  if article %}
-                            <a href="{% url 'tutorials:topic_detail' article.id %} " class="card-link">点击阅读</a>
+                            <a href="{% url 'blog:article' article.id %} " class="card-link">点击阅读</a>
                         {% endif %}
                     {% endwith %}
                 </div>

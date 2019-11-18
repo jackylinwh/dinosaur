@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tutorials',
     'mptt',
-    'mdeditor'
+    'mdeditor',
+    'blog'
 ]
 
 MIDDLEWARE = [

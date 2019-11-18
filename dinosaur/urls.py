@@ -20,7 +20,8 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('tutorials.urls')),
+    path('tutorials', include('tutorials.urls')),
+    path('', include('blog.urls')),
     path('mdeditor/', include('mdeditor.urls'))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

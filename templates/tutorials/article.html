@@ -9,15 +9,15 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 bg-light border-right border-left">
             <div class="sidebar-heading mt-4">{{ root.title }}</div>
-            <div id="mytree" class="bstree list-group list-group-flush">
+            <div id="mytree" class="bstree list-group list-group-flush mt-1">
                 {% with menu=root.get_descendants %}
                     <ul style="padding-inline-start: 1em">
                         {% recursetree menu %}
                             {% if node.is_leaf_node %}
-                                <li data-level={{ node.level }} data-link="{% url 'tutorials:topic_detail' node.id %}">
+                                <li data-level={{ node.level }} data-link="{% url 'tutorials:article' node.id %}">
                                     {% else %}
                                 <li data-level={{ node.level }}>
                             {% endif %}
