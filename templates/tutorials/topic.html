@@ -1,90 +1,62 @@
+{% extends './layout.html' %}
 {% load mptt_tags %}
 {% load static %}
 
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+{% block header %}
     <title>{{ model.title }}--程序猿|一个基于Django的博客网站</title>
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="{% static '/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <!-- Custom styles for this template -->
-    <link href="{% static '/tutorials/css/simple-sidebar.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'vendor/font-awesome-4.7.0/css/font-awesome.css' %}">
     <link href="{% static '/vendor/bstree/css/bstree.css' %}" rel="stylesheet"/>
-</head>
+{% endblock %}
 
-<body>
-
-<div class="d-flex" id="wrapper">
-
-    <!-- Sidebar -->
-    <div class="bg-dark text-light border-right" id="sidebar-wrapper" style="width: 15rem">
-        <div class="sidebar-heading">{{ root.title }}</div>
-        <div id="mytree" class="bstree">
-            {% with menu=root.get_descendants %}
-                <ul style="padding-inline-start: 1em">
-                    {% recursetree menu %}
-                        <li data-level={{ node.level }}>
-                            <span class="label label-default"><a
-                                    href="{% url 'tutorials:topic_detail' node.id %}">{{ node.title }}</a></span>
-                            {% if not node.is_leaf_node %}
-                                <ul class="children">
-                                    {{ children }}
-                                </ul>
+{% block content %}
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 bg-light border-right border-left">
+            <div class="sidebar-heading mt-4">{{ root.title }}</div>
+            <div id="mytree" class="bstree list-group list-group-flush">
+                {% with menu=root.get_descendants %}
+                    <ul style="padding-inline-start: 1em">
+                        {% recursetree menu %}
+                            {% if node.is_leaf_node %}
+                                <li data-level={{ node.level }} data-link="{% url 'tutorials:topic_detail' node.id %}">
+                                    {% else %}
+                                <li data-level={{ node.level }}>
                             {% endif %}
+                        <span class="label label-default">{{ node.title }}</span>
+                        {% if not node.is_leaf_node %}
+                            <ul class="children">
+                                {{ children }}
+                            </ul>
+                        {% endif %}
                         </li>
-                    {% endrecursetree %}
-                </ul>
-            {% endwith %}
+                        {% endrecursetree %}
+                    </ul>
+                {% endwith %}
+            </div>
         </div>
-    </div>
-    <!-- /#sidebar-wrapper -->
 
-    <!-- Page Content -->
-    <div id="page-content-wrapper">
-
-        <nav class="navbar navbar-dark bg-dark border-bottom">
-            <a class="navbar-brand" href="/">程序猿</a>
-            <button class="btn btn-primary" id="menu-toggle">目 录</button>
-        </nav>
-
-        <div class="container-fluid">
+        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
             <h1 class="mt-4">{{ model.title }}</h1>
             {{ model.content | safe }}
         </div>
     </div>
-    <!-- /#page-content-wrapper -->
+{% endblock %}
 
-</div>
-<!-- /#wrapper -->
+{% block extra-js %}
+    <script src="{% static '/vendor/bstree/js/jquery.bstree.js' %}"></script>
+    <script>
+        $('document').ready(function () {
+            $('#mytree').bstree({
+                isExpanded: true,
+                updateNodeTitle: function (node, title) {
+                    if (node.attr('data-link'))
+                        return "<a href='" + node.attr('data-link') + "'>" + title + "</a>";
+                    else
+                        return title
+                }
+            });
+        })
+    </script>
+{% endblock %}
 
-<!-- Bootstrap core JavaScript -->
-<script src="{% static '/vendor/jquery/jquery.min.js' %}"></script>
-<script src="{% static '/vendor/bootstrap/js/bootstrap.bundle.js' %}"></script>
-<script src="{% static '/vendor/bstree/js/jquery.bstree.js' %}"></script>
-<!-- Menu Toggle Script -->
-<script>
-    $("#menu-toggle").click(function (e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-</script>
-<script>
-    $('document').ready(function () {
-        $('#mytree').bstree({
-            updateNodeTitle: function (node, title) {
-                return title;
-            }
-        });
-    })
-</script>
-</body>
-
-</html>
 
 

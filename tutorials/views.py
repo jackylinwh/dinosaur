@@ -27,5 +27,7 @@ def topic(request, pk):
     root = model.get_root()
     menu = root.get_children()
     context = {'model': model, 'root': model.get_root()}
+    print(model.next())
+    print(model.prev())
     return render(request, 'tutorials/topic.html', context)
 

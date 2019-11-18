@@ -6,24 +6,40 @@ from django.utils.timezone import now
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from mdeditor.fields import MDTextField
+from mptt.utils import previous_current_next
 
 
 class Topic(MPTTModel):
     title = models.CharField(max_length=64, verbose_name='标题')
-    is_article = models.BooleanField(default=False)
-    content = MDTextField(verbose_name='内容', null=True, blank=True)
+    is_article = models.BooleanField(default=False, verbose_name='是否文章')
     cover = models.ImageField(verbose_name='封面', null=True, blank=True, upload_to='images')
-    tags = models.ManyToManyField('Tag', verbose_name='标签集合', blank=True)
-    index = models.IntegerField()
-    parent = TreeForeignKey('self', verbose_name='父级分类', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', verbose_name='父级目录', on_delete=models.CASCADE, null=True,
+                            blank=True, related_name='children')
 
     def __str__(self):
         return self.title
 
     class Meta:
+        verbose_name = "目录"
+        verbose_name_plural = "目录"
+
+
+class Article(models.Model):
+    topic = models.ForeignKey('Topic', on_delete=models.CASCADE, verbose_name="标题", related_name='content')
+    content = MDTextField(verbose_name='内容', null=True, blank=True)
+    index = models.IntegerField()
+    tags = models.ManyToManyField('Tag', verbose_name='标签集合', blank=True)
+
+    def title(self):
+        return self.__str__();
+
+    def __str__(self):
+        return self.topic.title
+
+    class Meta:
         ordering = ['index']
-        verbose_name = "主题/文章"
-        verbose_name_plural = "主题/文章"
+        verbose_name = "文章"
+        verbose_name_plural = "文章"
 
 
 class Tag(models.Model):
