@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 from mptt.admin import MPTTModelAdmin, DraggableMPTTAdmin
 
-from blog.models import Article
+from blog.models import Article, BlogSettings
 
 
 class ArticleAdmin(DraggableMPTTAdmin):
@@ -14,4 +14,10 @@ class ArticleAdmin(DraggableMPTTAdmin):
         form.base_fields['parent'].queryset = Article.objects.filter(level__lte=1, is_article=False)
         return form
 
+class BlogSettingsAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return BlogSettings.objects.count() == 0
+
+
 admin.site.register(Article, ArticleAdmin)
+admin.site.register(BlogSettings, BlogSettingsAdmin)

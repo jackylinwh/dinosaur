@@ -64,8 +64,11 @@
 <!-- Bootstrap core JavaScript -->
 <script src="{% static '/vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static '/vendor/bootstrap/js/bootstrap.bundle.js' %}"></script>
-
-</body>
+{% if ANALYTICS_CODE %}
+    {{ ANALYTICS_CODE | safe }}
+{% endif %}
 {% block extra-js %}
 {% endblock %}
+</body>
+
 </html>
