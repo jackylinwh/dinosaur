@@ -1,13 +1,13 @@
 from django.contrib import admin
 
 # Register your models here.
-from mptt.admin import MPTTModelAdmin
+from mptt.admin import MPTTModelAdmin, DraggableMPTTAdmin
 
 from blog.models import Article
 
 
-class ArticleAdmin(MPTTModelAdmin):
-    list_display = ['title', 'is_article', 'index', 'parent']
+class ArticleAdmin(DraggableMPTTAdmin):
+    list_display = ['tree_actions', 'indented_title', 'color_title', 'is_article', 'index', 'parent']
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(ArticleAdmin, self).get_form(request, obj, **kwargs)

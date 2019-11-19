@@ -1,7 +1,9 @@
 from django.db import models
+from django.utils.html import format_html
 from mdeditor.fields import MDTextField
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
+from mptt.utils import previous_current_next
 
 
 class Article(MPTTModel):
@@ -19,17 +21,26 @@ class Article(MPTTModel):
     def __str__(self):
         return self.title
 
+    def color_title(self):
+        if self.is_article:
+            title = "<span style='color:lime;'>[{0}]--{1}".format(self.index, self.title)
+            return format_html(title)
+        return ""
+
     def next(self):
-        list = self.get_root().get_leafnodes()
-        for article in list:
+        articles = self.get_root().get_leafnodes()
+        articles = sorted(articles, key=lambda a: a.index)
+        for article in articles:
             if article.index > self.index:
                 return article
+
         return None
 
     def prev(self):
-        list = self.get_root().get_leafnodes()
+        articles = self.get_root().get_leafnodes()
+        articles = sorted(articles, key=lambda a: a.index)
         p = None
-        for article in list:
+        for article in articles:
             if article.index < self.index:
                 p = article
             else:
@@ -40,3 +51,6 @@ class Article(MPTTModel):
         ordering = ['index']
         verbose_name = "文章/目录"
         verbose_name_plural = "文章/目录"
+
+    class MPTTMeta:
+        order_insertion_by = ['index']
