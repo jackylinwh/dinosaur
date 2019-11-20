@@ -29,6 +29,9 @@ def seo_processor(requests):
     else:
         logger.info('set processor cache.')
         setting = BlogSettings.objects.first()
+        if not setting:
+            setting = BlogSettings()
+            setting.save()
         value = {
             'SITE_NAME': setting.sitename,
             'SHOW_GOOGLE_ADSENSE': setting.show_google_adsense,

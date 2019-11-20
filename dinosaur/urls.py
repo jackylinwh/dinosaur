@@ -20,7 +20,6 @@ from django.conf import settings
 
 urlpatterns = [
     path('backadmin/', admin.site.urls),
-    path('tutorials', include('tutorials.urls')),
     path('', include('blog.urls')),
     path('mdeditor/', include('mdeditor.urls'))
 

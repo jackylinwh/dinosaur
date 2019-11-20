@@ -1,7 +1,6 @@
 {% extends './layout.html' %}
 {% load mptt_tags %}
 {% load static %}
-{% load blog_tags %}
 
 {% block header %}
     <title>{{ model.title }}--程序猿|一个基于Django的博客网站</title>
@@ -39,8 +38,11 @@
         <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
             <div class="mb-4">
                 <h1 class="mt-4">{{ model.title }}</h1>
+                <div>
+                    {{ toc | safe }}
+                </div>
                 <div class="mt-4">
-                    {{ model.content | markdown }}
+                    {{ content | safe }}
                 </div>
             </div>
         <nav aria-label="Page navigation mt-4">
