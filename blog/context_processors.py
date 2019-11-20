@@ -30,7 +30,7 @@ def seo_processor(requests):
         logger.info('set processor cache.')
         setting = BlogSettings.objects.first()
         if not setting:
-            setting = BlogSettings()
+            setting = BlogSettings(sitename='site1')
             setting.save()
         value = {
             'SITE_NAME': setting.sitename,

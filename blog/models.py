@@ -4,7 +4,6 @@ from django.utils.html import format_html
 from mdeditor.fields import MDTextField
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
-from mptt.utils import previous_current_next
 
 
 class Article(MPTTModel):
