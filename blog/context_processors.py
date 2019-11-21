@@ -16,10 +16,16 @@
 from datetime import datetime
 import logging
 
-from blog.models import BlogSettings
+from blog.models import BlogSettings, BlogConfig
 
 logger = logging.getLogger(__name__)
 
+
+def config_processor(requests):
+    configs = {}
+    for item in BlogConfig.objects.all():
+        configs[item.key] = item.get_value()
+    return configs
 
 def seo_processor(requests):
     key = 'seo_processor'

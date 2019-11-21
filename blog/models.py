@@ -92,3 +92,36 @@ class BlogSettings(models.Model):
         from DjangoBlog.utils import cache
         cache.clear()
     """
+
+
+class BlogConfig(models.Model):
+    VALUE_TYPE = (
+        ('s', "字符串"),
+        ('i', "整数"),
+        ('d', '小数'),
+        ('b', "布尔值")
+    )
+    name=models.CharField(verbose_name="配置名称",  max_length=20, unique=True)
+    key=models.CharField(verbose_name="Key", max_length=20, unique=True)
+    value=models.CharField(verbose_name="值", max_length=300)
+    desc=models.TextField(verbose_name="配置项描述")
+    value_type = models.CharField('值类型', max_length=1, choices=VALUE_TYPE, default='s')
+
+    def __str__(self):
+        return self.name + " => " + self.value
+
+    def get_value(self):
+        if self.value:
+           if self.value_type == 'i':
+               return int(self.value)
+           elif self.value_type == 'b':
+               return bool(self.value)
+           elif self.value_type == 'd':
+               return float(self.value)
+           else:
+                return self.value
+        return None
+
+    class Meta:
+         verbose_name = '参数配置'
+         verbose_name_plural = verbose_name

@@ -4,7 +4,7 @@ from django.contrib import admin
 from django import forms
 from mptt.admin import MPTTModelAdmin, DraggableMPTTAdmin
 
-from blog.models import Article, BlogSettings
+from blog.models import Article, BlogSettings, BlogConfig
 
 
 class ArticleAdmin(DraggableMPTTAdmin):
@@ -22,5 +22,9 @@ class BlogSettingsAdmin(admin.ModelAdmin):
         return BlogSettings.objects.count() == 0
 
 
+class BlogConfigAdmin(admin.ModelAdmin):
+    list_display = ['name', 'key', 'value', 'value_type', 'desc']
+
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(BlogSettings, BlogSettingsAdmin)
+admin.site.register(BlogConfig, BlogConfigAdmin)
