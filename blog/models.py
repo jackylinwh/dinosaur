@@ -17,7 +17,8 @@ class Article(MPTTModel):
                             blank=True, related_name='children')
 
     def first_article(self):
-        return self.get_root().get_leafnodes()[0]
+        articles =  self.get_root().get_leafnodes()
+        return articles[0] if len(articles) > 0 else None
 
     def __str__(self):
         return self.title
@@ -34,7 +35,6 @@ class Article(MPTTModel):
         for article in articles:
             if article.index > self.index:
                 return article
-
         return None
 
     def prev(self):
