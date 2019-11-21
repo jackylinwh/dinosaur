@@ -1,4 +1,5 @@
 import markdown
+
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
@@ -15,6 +16,7 @@ def index(request):
 def article(request, pk):
     model = get_object_or_404(Article, id=pk)
     root = model.get_root()
+
     md = markdown.Markdown(extensions=[
         'markdown.extensions.extra',
         'markdown.extensions.codehilite',

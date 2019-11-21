@@ -25,7 +25,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h4 class="card-title">{{ topic.title }}</h4>
-                    <p class="card-text">{{ topic.content | safe }}</p>
+                    <p class="card-text">{{ topic.summary | safe }}</p>
                     {% with article=topic.first_article %}
                         {%  if article %}
                             <a href="{% url 'blog:article' article.id %} " class="card-link">点击阅读</a>
