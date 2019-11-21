@@ -12,6 +12,7 @@ class Article(MPTTModel):
     index = models.IntegerField(verbose_name="序号", default=0)
     content = MDTextField(verbose_name='内容', null=True, blank=True)
     cover = models.ImageField(verbose_name='封面', null=True, blank=True, upload_to='images')
+    summary = models.CharField(max_length=200, verbose_name='摘要', null=True, blank=True)
     parent = TreeForeignKey('self', verbose_name='父级目录', on_delete=models.CASCADE, null=True,
                             blank=True, related_name='children')
 

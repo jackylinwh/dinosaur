@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
+from django import forms
 from mptt.admin import MPTTModelAdmin, DraggableMPTTAdmin
 
 from blog.models import Article, BlogSettings
@@ -12,7 +13,9 @@ class ArticleAdmin(DraggableMPTTAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super(ArticleAdmin, self).get_form(request, obj, **kwargs)
         form.base_fields['parent'].queryset = Article.objects.filter(level__lte=1, is_article=False)
+        form.base_fields['summary'] = forms.CharField(widget=forms.Textarea)
         return form
+
 
 class BlogSettingsAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):

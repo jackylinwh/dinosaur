@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware'
 ]
 
 ROOT_URLCONF = 'dinosaur.urls'
@@ -87,7 +89,7 @@ DATABASES = {
         'PORT': os.environ.get("DINOSAUR_MYSQL_PORT"),
         'NAME': os.environ.get("DINOSAUR_MYSQL_DB"),
         'USER': os.environ.get('DINOSAUR_MYSQL_USER'),
-        'PASSWORD': os.environ.get('DINOSAUR_MYSQL_DINOSAUR_PASSWORD'),   # 'aVCvGwhhxKe0vgsP',
+        'PASSWORD': os.environ.get('DINOSAUR_MYSQL_PASSWORD'),   # 'aVCvGwhhxKe0vgsP',
     }
 }
 

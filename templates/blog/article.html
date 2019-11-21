@@ -3,7 +3,26 @@
 {% load static %}
 
 {% block header %}
-    <title>{{ model.title }}--程序猿|一个基于Django的博客网站</title>
+    <title>{{ model.title }} | {{ SITE_DESCRIPTION }}</title>
+    <meta property="og:type" content="article"/>
+    <meta property="og:title" content="{{ model.title }}"/>
+
+
+    <meta property="og:description" content="{{ model.summary }}"/>
+
+
+    {% for t in model.tags.all %}
+        <meta property="article:tag" content="{{ t.name }}"/>
+    {% endfor %}
+    <meta property="og:site_name" content="{{ SITE_NAME }}"/>
+
+    <meta name="description" content="{{ model.summary }}"/>
+    {% if model.tags %}
+        <meta name="keywords" content="{{ model.tags.all|join:"," }}"/>
+    {% else %}
+        <meta name="keywords" content="{{ SITE_KEYWORDS }}"/>
+    {% endif %}
+
     <link rel="stylesheet" href="{% static 'vendor/font-awesome-4.7.0/css/font-awesome.css' %}">
     <link href="{% static '/vendor/bstree/css/bstree.css' %}" rel="stylesheet"/>
     <link href="{% static '/blog/css/code.css' %}" rel="stylesheet">
