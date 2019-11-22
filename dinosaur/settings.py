@@ -24,7 +24,7 @@ SECRET_KEY = '-e!*eft@b44^l!awb6$_=&%$qd6gygean8^0j_!q)yn1e=va!5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'imcoder.cc']
+ALLOWED_HOSTS = ['127.0.0.1', 'imcoder.cc', 'www.imcoder.cc']
 
 # Application definition
 
