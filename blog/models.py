@@ -9,7 +9,7 @@ from mptt.models import MPTTModel
 class Article(MPTTModel):
     title = models.CharField(max_length=64, verbose_name='标题')
     is_article = models.BooleanField(default=True, verbose_name='是否文章')
-    index = models.IntegerField(verbose_name="序号", default=0)
+    is_category = models.BooleanField(default=False, verbose_name='是否分类目录')  # 允许一篇文章有子节点，即作为一个分类
     content = MDTextField(verbose_name='内容', null=True, blank=True)
     cover = models.ImageField(verbose_name='封面', null=True, blank=True, upload_to='images')
     summary = models.CharField(max_length=200, verbose_name='摘要', null=True, blank=True)
@@ -17,44 +17,48 @@ class Article(MPTTModel):
                             blank=True, related_name='children')
 
     def first_article(self):
-        articles =  self.get_root().get_leafnodes()
-        return articles[0] if len(articles) > 0 else None
+        articles = self.get_root().get_descendants()
+        for article in articles:
+            if article.is_article:
+                return article
+        return None
 
     def __str__(self):
         return self.title
 
     def color_title(self):
         if self.is_article:
-            title = "<span style='color:lime;'>[{0}]--{1}".format(self.index, self.title)
+            title = "<span style='color:lime;'>{0}</span>".format(self.title)
             return format_html(title)
         return ""
 
     def next(self):
-        articles = self.get_root().get_leafnodes()
-        articles = sorted(articles, key=lambda a: a.index)
+        root = self.get_root();
+        articles = root.get_descendants()
+        found = False
         for article in articles:
-            if article.index > self.index:
+            if found and article.is_article:
                 return article
+            if article.id == self.id:
+                found = True
         return None
 
     def prev(self):
-        articles = self.get_root().get_leafnodes()
-        articles = sorted(articles, key=lambda a: a.index)
+        articles = self.get_root().get_descendants()
         p = None
         for article in articles:
-            if article.index < self.index:
-                p = article
-            else:
+            if article.id == self.id:
                 break
+            elif article.is_article:
+                p = article
         return p
 
     class Meta:
-        ordering = ['index']
         verbose_name = "文章/目录"
         verbose_name_plural = "文章/目录"
 
     class MPTTMeta:
-        order_insertion_by = ['index']
+        pass
 
 
 class BlogSettings(models.Model):
@@ -101,10 +105,10 @@ class BlogConfig(models.Model):
         ('d', '小数'),
         ('b', "布尔值")
     )
-    name=models.CharField(verbose_name="配置名称",  max_length=20, unique=True)
-    key=models.CharField(verbose_name="Key", max_length=20, unique=True)
-    value=models.CharField(verbose_name="值", max_length=300)
-    desc=models.TextField(verbose_name="配置项描述")
+    name = models.CharField(verbose_name="配置名称", max_length=20, unique=True)
+    key = models.CharField(verbose_name="Key", max_length=20, unique=True)
+    value = models.CharField(verbose_name="值", max_length=300, blank=True, null=True)
+    desc = models.TextField(verbose_name="配置项描述", blank=True, null=True)
     value_type = models.CharField('值类型', max_length=1, choices=VALUE_TYPE, default='s')
 
     def __str__(self):
@@ -112,16 +116,31 @@ class BlogConfig(models.Model):
 
     def get_value(self):
         if self.value:
-           if self.value_type == 'i':
-               return int(self.value)
-           elif self.value_type == 'b':
-               return bool(self.value)
-           elif self.value_type == 'd':
-               return float(self.value)
-           else:
+            if self.value_type == 'i':
+                return int(self.value)
+            elif self.value_type == 'b':
+                return bool(self.value)
+            elif self.value_type == 'd':
+                return float(self.value)
+            else:
                 return self.value
         return None
 
+    @staticmethod
+    def insert_default_config():
+        BlogConfig(name="Github", key="GITHUB_HOME", value="", desc="Github", value_type="s").save()
+        BlogConfig(name='网站名称', key='SITE_NAME', value="", desc="", value_type="s").save()
+        BlogConfig(name='网站SEO描述', key='SITE_SEO_DESCRIPTION', value="", desc="", value_type="s").save()
+        BlogConfig(name='网站描述', key='SITE_DESCRIPTION', value="", desc="", value_type="s").save()
+        BlogConfig(name='网站关键字', key='SITE_KEYWORDS', value="", desc="", value_type="s").save()
+        BlogConfig(name='网站URL', key='SITE_BASE_URL', value="", desc="", value_type="s").save()
+        BlogConfig(name='文章摘要字数', key='ARTICLE_SUB_LENGTH', value="", desc="", value_type="i").save()
+        BlogConfig(name='开启评论', key='OPEN_SITE_COMMENT', value="", desc="", value_type="s").save()
+        BlogConfig(name='备案代码', key='BEIAN_CODE', value="", desc="", value_type="s").save()
+        BlogConfig(name='统计代码', key='ANALYTICS_CODE', value="", desc="", value_type="s").save()
+        BlogConfig(name='公安备案', key="BEIAN_CODE_GONGAN", value="", desc="", value_type="s").save()
+        BlogConfig(name='显示公安备案', key="SHOW_GONGAN_CODE", value="", desc="", value_type="b").save()
+
     class Meta:
-         verbose_name = '参数配置'
-         verbose_name_plural = verbose_name
+        verbose_name = '参数配置'
+        verbose_name_plural = verbose_name

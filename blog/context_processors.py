@@ -23,13 +23,18 @@ logger = logging.getLogger(__name__)
 
 def config_processor(requests):
     configs = {}
-    for item in BlogConfig.objects.all():
+    models = BlogConfig.objects.all()
+    if len(models) == 0:
+        BlogConfig.insert_default_config()
+        models = BlogConfig.objects.all()
+    for item in models:
         configs[item.key] = item.get_value()
     return configs
 
+
 def seo_processor(requests):
     key = 'seo_processor'
-    value = None #cache.get(key)
+    value = None  # cache.get(key)
     if value:
         return value
     else:
@@ -47,8 +52,8 @@ def seo_processor(requests):
             'SITE_KEYWORDS': setting.site_keywords,
             'SITE_BASE_URL': requests.scheme + '://' + requests.get_host() + '/',
             'ARTICLE_SUB_LENGTH': setting.article_sub_length,
-            #'nav_category_list': Category.objects.all(),
-            #'nav_pages': Article.objects.filter(type='p', status='p'),
+            # 'nav_category_list': Category.objects.all(),
+            # 'nav_pages': Article.objects.filter(type='p', status='p'),
             'OPEN_SITE_COMMENT': setting.open_site_comment,
             'BEIAN_CODE': setting.beiancode,
             'ANALYTICS_CODE': setting.analyticscode,
@@ -57,5 +62,5 @@ def seo_processor(requests):
             "CURRENT_YEAR": datetime.now().year
 
         }
-        #cache.set(key, value, 60 * 60 * 10)
+        # cache.set(key, value, 60 * 60 * 10)
         return value
