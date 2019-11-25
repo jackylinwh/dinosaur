@@ -40,5 +40,5 @@ class BlogConfigAdmin(admin.ModelAdmin):
     list_display = ['name', 'key', 'value', 'value_type', 'desc']
 
 admin.site.register(Article, ArticleAdmin)
-admin.site.register(BlogSettings, BlogSettingsAdmin)
+#admin.site.register(BlogSettings, BlogSettingsAdmin)
 admin.site.register(BlogConfig, BlogConfigAdmin)
