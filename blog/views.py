@@ -4,13 +4,20 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.utils.text import slugify
+from django.views.generic import ListView
 from markdown.extensions.toc import TocExtension
 
 from blog.models import Article
 
 
+class IndexView(ListView):
+    template_name = "blog/index.html"
+
+
+
+
 def index(request):
-    return render(request, "blog/index.html", {"model":Article.objects.filter(parent=None)})
+    return render(request, "blog/index.html", {"model": Article.objects.filter(parent=None)})
 
 
 def article(request, pk):

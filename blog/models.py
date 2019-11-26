@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.html import format_html
+from django.utils.timezone import now
 from mdeditor.fields import MDTextField
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
@@ -18,6 +19,7 @@ class Article(MPTTModel):
     cover = models.ImageField(verbose_name='封面', null=True, blank=True, upload_to='images')
     summary = models.CharField(max_length=200, verbose_name='摘要', null=True, blank=True)
     status = models.CharField(max_length=1, verbose_name="状态", choices=ARTICLE_STATUS, default='p')
+    pub_date = models.DateTimeField(verbose_name="发表日期", default=now)
     views = models.PositiveIntegerField('浏览量', default=0)
     parent = TreeForeignKey('self', verbose_name='父级目录', on_delete=models.CASCADE, null=True,
                             blank=True, related_name='children')
