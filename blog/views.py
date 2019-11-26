@@ -15,6 +15,7 @@ def index(request):
 
 def article(request, pk):
     model = get_object_or_404(Article, id=pk)
+    model.viewed()
     root = model.get_root()
 
     md = markdown.Markdown(extensions=[

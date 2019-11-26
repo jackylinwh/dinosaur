@@ -30,6 +30,41 @@
 
 {% block content %}
     <div class="row">
+        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+            <div class="mb-4">
+                <h1 class="mt-4">{{ model.title }}</h1>
+                    <div class="mt-1">
+                        {{ toc | safe }}
+                    </div>
+                <div class="mt-4 article">
+                    {{ content | safe }}
+                </div>
+            </div>
+            <nav aria-label="Page navigation mt-4">
+                <ul class="pagination row">
+                    {% with prev=model.prev %}
+                        {% if prev %}
+                            <li class="pate-item col-md-6"><a
+                                    href="{% url 'blog:article' prev.id %}">&larr; {{ prev.title }}</a>
+                            </li>
+                        {% else %}
+                            <li class="pate-item col-md-6"><a class="disabled" href="javascript:void(0);">&larr; 没有了</a>
+                            </li>
+                        {% endif %}
+                    {% endwith %}
+                    {% with next=model.next %}
+                        {% if next %}
+                            <li class="pate-item col-md-6 text-md-right text-xs-left"><a
+                                    href="{% url 'blog:article' next.id %}">{{ next.title }} &rarr;</a></li>
+                        {% else %}
+                            <li class="page-item col-md-6 text-md-right text-xs-left"><a class="disabled"
+                                                                                         href="javascript:void(0);">没有了
+                                &rarr;</a></li>
+                        {% endif %}
+                    {% endwith %}
+                </ul>
+            </nav>
+        </div>
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 bg-light border-right border-left">
             <div class="sidebar-heading  mt-4"><strong>{{ root.title }}</strong></div>
             <div id="mytree" class="bstree list-group list-group-flush  mt-1">
@@ -52,37 +87,6 @@
                     </ul>
                 {% endwith %}
             </div>
-        </div>
-
-        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-            <div class="mb-4">
-                <h1 class="mt-4">{{ model.title }}</h1>
-                <div>
-                    {{ toc | safe }}
-                </div>
-                <div class="mt-4">
-                    {{ content | safe }}
-                </div>
-            </div>
-        <nav aria-label="Page navigation mt-4">
-            <ul class="pagination row">
-                {% with prev=model.prev %}
-                    {% if prev %}
-                        <li class="pate-item col-md-6"><a href="{% url 'blog:article' prev.id %}">&larr; {{ prev.title }}</a>
-                        </li>
-                    {% else %}
-                        <li class="pate-item col-md-6"><a class="disabled" href="javascript:void(0);">&larr; 没有了</a></li>
-                    {% endif %}
-                {% endwith %}
-                {% with next=model.next %}
-                    {% if next %}
-                        <li class="pate-item col-md-6 text-md-right text-xs-left"><a href="{% url 'blog:article' next.id %}">{{ next.title }} &rarr;</a></li>
-                    {% else %}
-                        <li class="page-item col-md-6 text-md-right text-xs-left"><a class="disabled" href="javascript:void(0);">没有了  &rarr;</a></li>
-                    {% endif %}
-                {% endwith %}
-            </ul>
-        </nav>
         </div>
     </div>
 {% endblock %}

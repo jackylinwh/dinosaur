@@ -90,7 +90,10 @@ DATABASES = {
         'PORT': os.environ.get("DINOSAUR_MYSQL_PORT"),
         'NAME': os.environ.get("DINOSAUR_MYSQL_DB"),
         'USER': os.environ.get('DINOSAUR_MYSQL_USER'),
-        'PASSWORD': os.environ.get('DINOSAUR_MYSQL_PASSWORD'),   # 'aVCvGwhhxKe0vgsP',
+        'PASSWORD': os.environ.get('DINOSAUR_MYSQL_PASSWORD'),
+        'OPTIONS': {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
     }
 }
 

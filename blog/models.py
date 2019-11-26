@@ -7,19 +7,25 @@ from mptt.models import MPTTModel
 
 
 class Article(MPTTModel):
+    ARTICLE_STATUS = (
+        ('p', '发布'),
+        ('d', '草稿')
+    )
     title = models.CharField(max_length=64, verbose_name='标题')
     is_article = models.BooleanField(default=True, verbose_name='是否文章')
     is_category = models.BooleanField(default=False, verbose_name='是否分类目录')  # 允许一篇文章有子节点，即作为一个分类
     content = MDTextField(verbose_name='内容', null=True, blank=True)
     cover = models.ImageField(verbose_name='封面', null=True, blank=True, upload_to='images')
     summary = models.CharField(max_length=200, verbose_name='摘要', null=True, blank=True)
+    status = models.CharField(max_length=1, verbose_name="状态", choices=ARTICLE_STATUS, default='p')
+    views = models.PositiveIntegerField('浏览量', default=0)
     parent = TreeForeignKey('self', verbose_name='父级目录', on_delete=models.CASCADE, null=True,
                             blank=True, related_name='children')
 
     def first_article(self):
         articles = self.get_root().get_descendants()
         for article in articles:
-            if article.is_article:
+            if article.is_article and article.status == 'p':
                 return article
         return None
 
@@ -37,7 +43,7 @@ class Article(MPTTModel):
         articles = root.get_descendants()
         found = False
         for article in articles:
-            if found and article.is_article:
+            if found and article.is_article and article.status == 'p':
                 return article
             if article.id == self.id:
                 found = True
@@ -49,13 +55,17 @@ class Article(MPTTModel):
         for article in articles:
             if article.id == self.id:
                 break
-            elif article.is_article:
+            elif article.is_article and article.status == 'p':
                 p = article
         return p
 
     class Meta:
         verbose_name = "文章/目录"
         verbose_name_plural = "文章/目录"
+
+    def viewed(self):
+        self.views += 1
+        self.save(update_fields=['views'])
 
     class MPTTMeta:
         pass
@@ -88,7 +98,7 @@ class BlogSettings(models.Model):
 
     def clean(self):
         if BlogSettings.objects.exclude(id=self.id).count():
-            raise ValidationError(_('只能有一个配置'))
+            raise ValidationError('只能有一个配置')
 
     """
     def save(self, *args, **kwargs):
