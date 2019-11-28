@@ -20,7 +20,8 @@ class Article(MPTTModel):
     summary = models.CharField(max_length=200, verbose_name='摘要', null=True, blank=True)
     status = models.CharField(max_length=1, verbose_name="状态", choices=ARTICLE_STATUS, default='p')
     pub_date = models.DateTimeField(verbose_name="发表日期", default=now)
-    views = models.PositiveIntegerField('浏览量', default=0)
+    tags = models.ManyToManyField('Tag', verbose_name='标签', default=None, null=True, blank=True)
+    views = models.PositiveIntegerField(verbose_name='浏览量', default=0)
     parent = TreeForeignKey('self', verbose_name='父级目录', on_delete=models.CASCADE, null=True,
                             blank=True, related_name='children')
 
@@ -72,6 +73,21 @@ class Article(MPTTModel):
     class MPTTMeta:
         pass
 
+
+class Tag(models.Model):
+    name = models.CharField('标签名', max_length=30, unique=True)
+    slug = models.SlugField(default='no-slug', max_length=60, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_article_count(self):
+        return Article.objects.filter(tags__name=self.name).distinct().count()
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = "标签"
+        verbose_name_plural = verbose_name
 
 class BlogSettings(models.Model):
     '''站点设置 '''

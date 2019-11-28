@@ -5,11 +5,12 @@ from django import forms
 from django.utils.html import format_html
 from mptt.admin import MPTTModelAdmin, DraggableMPTTAdmin
 
-from blog.models import Article, BlogSettings, BlogConfig
+from blog.models import Article, BlogSettings, BlogConfig, Tag
 
 
 class ArticleAdmin(DraggableMPTTAdmin):
     list_display = ['tree_actions', 'indented_title', 'is_article', 'status', 'views', 'parent']
+    filter_horizontal = ('tags',)
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(ArticleAdmin, self).get_form(request, obj, **kwargs)
@@ -39,7 +40,10 @@ class BlogSettingsAdmin(admin.ModelAdmin):
 class BlogConfigAdmin(admin.ModelAdmin):
     list_display = ['name', 'key', 'value', 'value_type', 'desc']
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = ['name', 'slug']
 
 admin.site.register(Article, ArticleAdmin)
 # admin.site.register(BlogSettings, BlogSettingsAdmin)
 admin.site.register(BlogConfig, BlogConfigAdmin)
+admin.site.register(Tag, TagAdmin)
