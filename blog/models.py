@@ -20,7 +20,7 @@ class Article(MPTTModel):
     summary = models.CharField(max_length=200, verbose_name='摘要', null=True, blank=True)
     status = models.CharField(max_length=1, verbose_name="状态", choices=ARTICLE_STATUS, default='p')
     pub_date = models.DateTimeField(verbose_name="发表日期", default=now)
-    tags = models.ManyToManyField('Tag', verbose_name='标签', default=None, null=True, blank=True)
+    tags = models.ManyToManyField('Tag', verbose_name='标签', default=None, blank=True)
     views = models.PositiveIntegerField(verbose_name='浏览量', default=0)
     parent = TreeForeignKey('self', verbose_name='父级目录', on_delete=models.CASCADE, null=True,
                             blank=True, related_name='children')

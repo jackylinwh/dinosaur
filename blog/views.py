@@ -1,6 +1,6 @@
 import markdown
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
 from django.utils.text import slugify
@@ -12,8 +12,6 @@ from blog.models import Article
 
 class IndexView(ListView):
     template_name = "blog/index.html"
-
-
 
 
 def index(request):
@@ -34,3 +32,7 @@ def article(request, pk):
     toc = md.toc
     context = {'model': model, 'root': root, 'content': content, 'toc': toc}
     return render(request, 'blog/article.html', context)
+
+
+def page_not_found(request, exception):
+    return redirect("/", False, {"msg": "404 Page NOT found!"})

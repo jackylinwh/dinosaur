@@ -18,9 +18,13 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('blog.urls')),
-    path('mdeditor/', include('mdeditor.urls'))
+from blog import views
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns = [
+                  path('admin/', admin.site.urls),
+                  path('', include('blog.urls')),
+                  path('mdeditor/', include('mdeditor.urls'))
+
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = views.page_not_found
