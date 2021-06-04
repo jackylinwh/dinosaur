@@ -1,5 +1,5 @@
 django_mdeditor==0.1.16
-Django==2.2.5
+Django==2.2.21
 Markdown==3.1.1
 django_mptt==0.10.0
 mdeditor==0.3.2
